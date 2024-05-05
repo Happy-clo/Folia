@@ -1,64 +1,39 @@
-# Here lie dragons!
-#
-# This action either builds the server or
-# builds a paperclip jar to be updated in the body
-# of the PR relating to this action.
-
 name: Build
 on:
   push:
   pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - labeled
+    types: [opened, reopened, synchronize, labeled]
 
 jobs:
   Build-Folia:
-    # Run on all label events (won't be duplicated) or all push events or on PR syncs not from the same repo
     if: (github.event_name == 'pull_request' && github.event.action == 'labeled') || github.event_name != 'pull_request' || github.repository != github.event.pull_request.head.repo.full_name
     runs-on: ubuntu-latest
     strategy:
       matrix:
         java: [17]
-      fail-fast: true
     steps:
       - uses: actions/checkout@v3
-      - name: JDK ${{ matrix.java }}
-        uses: actions/setup-java@v3.11.0
+      - uses: actions/setup-java@v3.11.0
         with:
           java-version: ${{ matrix.java }}
           distribution: 'temurin'
-
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-
-      - name: Apply Patches
+      - uses: gradle/wrapper-validation-action@v1
+      - uses: gradle/gradle-build-action@v2
+      - name: Apply Patches and Build
         run: |
           git config --global user.email "no-reply@github.com"
           git config --global user.name "Github Actions"
           ./gradlew applyPatches --stacktrace
-
-      - name: Build
-        run: ./gradlew build --stacktrace
-      - name: jar
-        run: ./gradlew createReobfBundlerJar
-      - name: Tasks
-        run: ./gradlew tasks
-      - name: upload Folia Jar
-        uses: actions/upload-artifact@v3
+          ./gradlew build --stacktrace
+          ./gradlew createReobfBundlerJar
+      - uses: actions/upload-artifact@v3
         with:
          name: Folia
          path: build/libs/*.jar
-      - name: automatic releases
-        uses: marvinpinto/action-automatic-releases@v1.2.1
+      - uses: marvinpinto/action-automatic-releases@v1.2.1
         with:
          repo_token: "${{ secrets.GITHUB_TOKEN }}"
          automatic_release_tag: "latest"
          prerelease: false
          title: "Folia 自动构建最新版本"
-         files: |
-              build/libs/*.jar
+         files: build/libs/*.jar
