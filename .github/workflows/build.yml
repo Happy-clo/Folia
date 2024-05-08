@@ -6,7 +6,7 @@ on:
     types: [opened, reopened, synchronize, labeled]
 
 jobs:
-  构建-Folia:
+  build:
     if: >
       (github.event_name == 'pull_request' && github.event.action == 'labeled') ||
       github.event_name != 'pull_request' ||
