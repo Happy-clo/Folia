@@ -229,6 +229,8 @@ found in `./patches` and its subdirectories except when noted otherwise.
 The fork is based off of PaperMC's fork example found [here](https://github.com/PaperMC/paperweight-examples).
 As such, it contains modifications to it in this project, please see the repository for license information
 of modified files.
+> [!CAUTION]  
+> This branch is only for personal development, study and research. Please do not use any attachments directly. The author is not responsible for any problems with the source attachments.
 # Statement
 
 > [!CAUTION]  
