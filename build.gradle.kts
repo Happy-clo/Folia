@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
     remapper("net.fabricmc:tiny-remapper:0.10.2:fat")
-    decompiler("org.vineflower:vineflower:1.10.1")
+    decompiler("org.vineflower:vineflower:1.11.1")
     paperclip("io.papermc:paperclip:3.0.3")
 }
 
